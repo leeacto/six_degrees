@@ -9,6 +9,7 @@ gem 'jquery-rails'
 gem 'rails_12factor'
 gem 'turbolinks'
 gem 'coveralls', require: false
+gem 'rottentomatoes'
 
 group :test, :development do
   gem 'factory_girl_rails'

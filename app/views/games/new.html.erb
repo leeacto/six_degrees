@@ -1,7 +1,12 @@
 <h1>Six Degrees of Kevin Bacon</h1>
 
+<%= form_tag 'games/find_actor', :id => 'starting_actor'  do %>
+  <input type='text' name='search' placeholder ='Starting Actor'>
+  <input type='submit' value='Find Actor'>
+<% end %>
+
+<div id='starting_actor_box'></div>
+
 <div class="actor_box">
   <div id='start_portrait'></div>
-
 </div>
-<%= @movie.title %>

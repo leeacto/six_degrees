@@ -47,14 +47,30 @@ wasInObj.prototype.getFilms = function (){
       opt.attr('id', film[0]);
       opt.text(film[1]);
       opt.appendTo(self.filmDropDown);
+    })
+  }).done(function(){
+    self.filmDropDown.on('change', function(){
+      var movieId = $(this).children(":selected").attr("id");
+      $.ajax({
+        url: '/games/cast',
+        method: 'POST',
+        data: {id: movieId},
+        dataType: 'json'
+      }).done(function(films){
+        $('#cast_dropdown').append($('<option>Cast</option>'));
+        $.each(films, function(id, actor){
+          var opt = $('<option/>');
+          opt.attr('id', actor[0]);
+          opt.text(actor[1]);
+          opt.appendTo($('#cast_dropdown'));
+        });
+      });
     });
-    self.filmDropDown.on('change', self.populateCast())
   });
 }
 
-wasInObj.prototype.populateCast = function(){
+wasInObj.prototype.populateCast = function(movie){
   var self = this;
-  console.log($('#film_dropdown'));
   var movieId = (this.filmDropDown).val();
   $.ajax({
     url: '/games/cast',

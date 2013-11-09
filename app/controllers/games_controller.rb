@@ -18,8 +18,8 @@ class GamesController < ApplicationController
   end
 
   def cast
-    @cast = Tmdb::Movie.casts(22855)
-    # @cast = Tmdb::Movie.casts(params[:id].to_i)
+    # @cast = Tmdb::Movie.casts(22855)
+    @cast = Tmdb::Movie.casts(params[:id].to_i)
     puts @cast.inspect
     @cast.map! {|actor| [actor["id"], actor["name"]]}
     render json: @cast

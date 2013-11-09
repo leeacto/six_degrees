@@ -1,0 +1,11 @@
+.portrait {
+  width: 100px;
+}
+
+#starting_actors_box div {
+  display: inline-block;
+}
+
+.hidden {
+  display: none;
+}

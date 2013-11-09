@@ -10,6 +10,7 @@ gem 'rails_12factor'
 gem 'turbolinks'
 gem 'coveralls', require: false
 gem 'rottentomatoes'
+gem 'themoviedb'
 
 group :test, :development do
   gem 'factory_girl_rails'

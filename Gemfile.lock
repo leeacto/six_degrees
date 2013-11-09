@@ -67,6 +67,9 @@ GEM
     faker (1.2.0)
       i18n (~> 0.5)
     hike (1.2.3)
+    httparty (0.12.0)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.6.5)
     jasmine-core (1.3.1)
     jasmine-jquery-rails (1.5.9)
@@ -87,6 +90,7 @@ GEM
     mini_portile (0.5.1)
     minitest (4.7.5)
     multi_json (1.8.2)
+    multi_xml (0.5.5)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     pg (0.17.0)
@@ -153,6 +157,8 @@ GEM
       sprockets (~> 2.8)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
+    themoviedb (0.0.8)
+      httparty
     thor (0.18.1)
     thread_safe (0.1.3)
       atomic
@@ -192,5 +198,6 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 4.0.0)
   simplecov
+  themoviedb
   turbolinks
   uglifier (>= 1.3.0)

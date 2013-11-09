@@ -12,12 +12,11 @@
   Starting Actor
 </div>
 
-<div class="starting_actor portrait">
-  <%= image_tag 'no-profile.jpg' %>
-  Starting Actor
-</div>
+<%= select_tag :option_dropdowns, {:class => 'hidden'} %>
+
+
 
 <div class="ending_actor portrait">
-  <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}" size='92x138' %>
+  <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}", size:"92x138" %>
   Ending Actor
 </div>

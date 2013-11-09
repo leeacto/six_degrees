@@ -6,4 +6,5 @@ SixDegrees::Application.routes.draw do
   root 'games#new'
   
   post '/games/find_actor', to: 'games#find_actor'
+  post '/games/filmography', to: 'games#filmography'
 end

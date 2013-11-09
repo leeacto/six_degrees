@@ -10,4 +10,11 @@ class GamesController < ApplicationController
     @actor_array = Tmdb::People.search(params[:search])
     render json: @actor_array
   end
+
+  def filmography
+    puts "Params #{params}"
+    @films = Tmdb::People.credits(4724)["cast"]
+    @films.map! {|film| [film["id"], film["title"]]}
+    render json: @films
+  end
 end

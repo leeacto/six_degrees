@@ -26,18 +26,44 @@ Actor.prototype.appendAndListen = function(){
   }).appendTo('#starting_actors_box');
 };
 
+var wasInObj = function(actor) {
+  this.startActor = actor;
+  this.filmography = this.getFilms();
+}
+
+wasInObj.prototype.getFilms = function (){
+  var self = this;
+  console.log(this.startActor.tmdb);
+  $.ajax({
+    url: '/games/filmography',
+    method: 'POST',
+    data: this.startActor.tmdb,
+    dataType: 'json'
+  }).done(function(films){
+    console.log(films);
+    $.each(films, function(id, film){
+      var opt = $('<option/>');
+      opt.attr('id', film[0]);
+      opt.text(film[1]);
+      opt.appendTo($('#option_dropdowns'))
+    })
+  });
+}
+
 $(document).ready(function(){
+
   $('body').on('actorSelect', function(event, actor){
     event.stopPropagation();
     event.preventDefault();
     $('#starting_actors_box').html('');
     actor.setStartActor();
+    var wasIn = new wasInObj(actor);
   });
 
   $('#starting_actor').on('submit', function(event){
     event.stopPropagation();
     event.preventDefault();
-    
+    $('#starting_actors_box').html('');
     $.ajax({
       url: "/games/find_actor",
       method: 'POST',

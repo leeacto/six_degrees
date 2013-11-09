@@ -6,6 +6,6 @@
   display: inline-block;
 }
 
-.starting_actor {
-  
+.hidden {
+  display: none;
 }

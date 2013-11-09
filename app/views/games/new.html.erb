@@ -5,8 +5,19 @@
   <input type='submit' value='Find Actor'>
 <% end %>
 
-<div id='starting_actor_box'></div>
+<div id='starting_actors_box'></div>
 
-<div class="actor_box">
-  <div id='start_portrait'></div>
+<div class="starting_actor portrait">
+  <%= image_tag 'no-profile.jpg' %>
+  Starting Actor
+</div>
+
+<div class="starting_actor portrait">
+  <%= image_tag 'no-profile.jpg' %>
+  Starting Actor
+</div>
+
+<div class="ending_actor portrait">
+  <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}" size='92x138' %>
+  Ending Actor
 </div>

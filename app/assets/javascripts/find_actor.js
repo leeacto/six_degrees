@@ -33,14 +33,12 @@ var wasInObj = function(actor) {
 
 wasInObj.prototype.getFilms = function (){
   var self = this;
-  console.log(this.startActor.tmdb);
   $.ajax({
     url: '/games/filmography',
     method: 'POST',
-    data: this.startActor.tmdb,
+    data: {id: this.startActor.tmdb},
     dataType: 'json'
   }).done(function(films){
-    console.log(films);
     $.each(films, function(id, film){
       var opt = $('<option/>');
       opt.attr('id', film[0]);

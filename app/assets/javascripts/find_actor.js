@@ -28,6 +28,8 @@ Actor.prototype.appendAndListen = function(){
 
 var wasInObj = function(actor) {
   this.startActor = actor;
+  this.filmDropDown = $('#film_dropdown');
+  this.castDropDown = $('#cast_dropdown');
   this.filmography = this.getFilms();
 }
 
@@ -39,12 +41,34 @@ wasInObj.prototype.getFilms = function (){
     data: {id: this.startActor.tmdb},
     dataType: 'json'
   }).done(function(films){
+    (self.filmDropDown).append($('<option>Filmography</option>'));
     $.each(films, function(id, film){
       var opt = $('<option/>');
       opt.attr('id', film[0]);
       opt.text(film[1]);
-      opt.appendTo($('#option_dropdowns'))
-    })
+      opt.appendTo(self.filmDropDown);
+    });
+    self.filmDropDown.on('change', self.populateCast())
+  });
+}
+
+wasInObj.prototype.populateCast = function(){
+  var self = this;
+  console.log($('#film_dropdown'));
+  var movieId = (this.filmDropDown).val();
+  $.ajax({
+    url: '/games/cast',
+    method: 'POST',
+    data: {id: movieId},
+    dataType: 'json'
+  }).done(function(films){
+    $('#cast_dropdown').append($('<option>Cast</option>'));
+    $.each(films, function(id, actor){
+      var opt = $('<option/>');
+      opt.attr('id', actor[0]);
+      opt.text(actor[1]);
+      opt.appendTo($('#cast_dropdown'));
+    });
   });
 }
 

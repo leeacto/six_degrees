@@ -35,6 +35,7 @@ var wasInObj = function(actor) {
   this.filmDropDown = $('#film_dropdown');
   this.castDropDown = $('#cast_dropdown');
   this.selectButton = $('#select_actor');
+  this.removeButton = $('#remove_actor');
   this.filmography = this.getFilms();
   this.castDropDown.on('change', function(){
     var actorId = $(this).children(":selected").attr("id");
@@ -136,15 +137,20 @@ $(document).ready(function(){
           actorChain.push(workedWith);
           if(workedWith.tmdb === 4724) {
             alert('You connected in ' + (actorChain.length-1) + ' steps!')
-          } else {
-            wasIn.updateActor(workedWith);
-          }
+          } else { wasIn.updateActor(workedWith) }
         }
-        else {
-          $('#error').text('Actor/Movie already added');
-        }
+        else { $('#error').text('Actor/Movie already added') }
       });
-    })
+    });
+
+    wasIn.removeButton.on('click', function(){
+      if (actorChain.length > 0) {
+        actorChain.pop();
+        movieChain.pop();
+        console.log(actorChain);
+        $('.starting_actor').find('.portrait').last().detach();
+      }
+    });
   });
 
   $('#starting_actor').on('submit', function(event){

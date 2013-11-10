@@ -36,6 +36,12 @@ var wasInObj = function(actor) {
   this.castDropDown = $('#cast_dropdown');
   this.selectButton = $('#select_actor');
   this.filmography = this.getFilms();
+  this.castDropDown.on('change', function(){
+    var curr_actor = "<div class='portrait'>" +
+              "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
+              data[1] + "' width='92' height='138'></div>";
+    $('#current_actor').html(curr_actor);
+  })
 }
 
 wasInObj.prototype.updateActor = function(actor) {
@@ -63,14 +69,20 @@ wasInObj.prototype.getFilms = function (){
     $('#cast_dropdown').html('');
     self.filmDropDown.on('change', function(){
       var movieId = $(this).children(":selected").attr("id");
+
       $.ajax({
         url: '/games/cast',
         method: 'POST',
         data: {id: movieId},
         dataType: 'json'
-      }).done(function(films){
+      }).done(function(data){
+        var curr_movie = "<div class='portrait'>" +
+              "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
+              data[1] + "' width='92' height='138'></div>";
+        $('#current_movie').html(curr_movie);
         $('#cast_dropdown').append($('<option>Cast</option>'));
-        $.each(films, function(id, actor){
+
+        $.each(data[0], function(id, actor){
           var opt = $('<option/>');
           opt.attr('id', actor[0]);
           opt.text(actor[1]);

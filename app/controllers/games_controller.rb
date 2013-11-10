@@ -25,7 +25,8 @@ class GamesController < ApplicationController
 
   def cast
     @cast = Tmdb::Movie.casts(params[:id].to_i)
+    @film = Tmdb::Movie.detail(params[:id].to_i).poster_path
     @cast.map! {|actor| [actor["id"], actor["name"]]}
-    render json: @cast
+    render json: [@cast, @film]
   end
 end

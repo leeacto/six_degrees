@@ -17,7 +17,11 @@
 With
 <%= select_tag :cast_dropdown %>
 <button id='select_actor'>Select Actor</button>
+
 <div class="ending_actor portrait">
   <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}", size:"92x138" %>
   Ending Actor
 </div>
+
+<div id='current_movie'></div>
+<div id='current_actor'></div>

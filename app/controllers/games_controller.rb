@@ -18,7 +18,7 @@ class GamesController < ApplicationController
   end
 
   def filmography
-    @films = Tmdb::People.credits(params[:id].to_i)["cast"]
+    @films = Tmdb::People.credits(params[:id].to_i)['cast']
     @films.map! {|film| [film["id"], film["title"]]}
     render json: @films
   end

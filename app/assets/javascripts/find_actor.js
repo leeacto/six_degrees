@@ -74,6 +74,7 @@ wasInObj.prototype.getFilms = function (){
   }).done(function(){
     $('#cast_dropdown').html('');
     self.filmDropDown.on('change', function(){
+      (self.castDropDown).html('');
       var movieId = $(this).children(":selected").attr("id");
 
       $.ajax({

@@ -45,10 +45,6 @@ var wasInObj = function(actor) {
       dataType: 'json'
     }).done(function(actor){
       var workedWith = new Actor(actor);
-
-      var curr_actor = "<div class='portrait'>" +
-                "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
-                workedWith.pic + "' width='92' height='138'></div>";
       $('#current_actor').html(workedWith.html);
     });
   })
@@ -114,6 +110,8 @@ $(document).ready(function(){
     actor.setStartActor();
     var wasIn = new wasInObj(actor);
     wasIn.selectButton.on('click', function(){
+      $('.current').html("<div id='current_movie'></div>" + 
+        "<div id='current_actor'></div>")
       var actorId = $(wasIn.castDropDown).children(":selected").attr("id");
       $.ajax({
         url: "/games/find_actor_by_id",

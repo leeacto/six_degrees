@@ -1,27 +1,31 @@
 <h1>Six Degrees of Kevin Bacon</h1>
 
-<%= form_tag 'games/find_actor', :id => 'starting_actor'  do %>
-  <input type='text' name='search' placeholder ='Starting Actor'>
-  <input type='submit' value='Find Actor'>
-<% end %>
+<div class='core'>
+  <%= form_tag 'games/find_actor', :id => 'starting_actor'  do %>
+    <input type='text' name='search' placeholder ='Starting Actor'>
+    <input type='submit' value='Find Actor'>
+  <% end %>
 
-<div id='starting_actors_box'></div>
+  <div id='starting_actors_box'></div>
 
-<div class="starting_actor">
-  <%= image_tag 'no-profile.jpg' %>
-  Starting Actor
+  <div class="starting_actor">
+    <%= image_tag 'no-profile.jpg' %>
+    Starting Actor
+  </div>
+
+
+  <%= select_tag :film_dropdown %>
+  With
+  <%= select_tag :cast_dropdown %>
+  <button id='select_actor'>Select Actor</button>
+
+  <div class="ending_actor portrait">
+    <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}", size:"92x138" %>
+    Ending Actor
+  </div>
 </div>
 
-
-<%= select_tag :film_dropdown %>
-With
-<%= select_tag :cast_dropdown %>
-<button id='select_actor'>Select Actor</button>
-
-<div class="ending_actor portrait">
-  <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}", size:"92x138" %>
-  Ending Actor
+<div class='current'>
+  <div id='current_movie'></div>
+  <div id='current_actor'></div>
 </div>
-
-<div id='current_movie'></div>
-<div id='current_actor'></div>

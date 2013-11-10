@@ -1,3 +1,13 @@
+body {
+  background-color: #222;
+}
+.container {
+  background-color: white;
+  width: 90%;
+  float: left;
+  margin: auto;
+}
+
 .portrait {
   width: 100px;
 }
@@ -11,6 +21,22 @@
 }
 
 .starting_actor div {
+  display: inline-block;
+  height: 150;
+}
+
+.core {
+  padding-left: 3%;
+  width: 75%;
+  float: left;
+}
+
+.current {
+  width: 20%;
+  float: left;
+}
+
+.current div {
   display: inline-block;
   height: 150;
 }

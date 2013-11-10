@@ -120,11 +120,14 @@ $(document).ready(function(){
         dataType: 'json'
       }).done(function(actor){
         var workedWith = new Actor(actor);
+        var movieId = wasIn.filmDropDown.children(":selected").attr("id");
         var newActor = true;
+        var newMovie = true;
         $.each(actorChain, function(index, actor){
           if (workedWith.name === actor.name) { newActor = false }
         });
-        if (newActor) {
+        if ($.inArray(movieId, movieChain) >= 0) { newMovie = false }
+        if (newActor && newMovie) {
           $('#error').text('');
           $('.current').html("<div id='current_movie'></div>" + 
             "<div id='current_actor'></div>")
@@ -138,7 +141,7 @@ $(document).ready(function(){
           }
         }
         else {
-          $('#error').text('Actor already added');
+          $('#error').text('Actor/Movie already added');
         }
       });
     })

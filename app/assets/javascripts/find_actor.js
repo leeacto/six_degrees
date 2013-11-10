@@ -88,6 +88,7 @@ $(document).ready(function(){
     event.stopPropagation();
     event.preventDefault();
     $('#starting_actors_box').html('');
+    actorChain.push(actor);
     actor.setStartActor();
     var wasIn = new wasInObj(actor);
     wasIn.selectButton.on('click', function(){
@@ -101,7 +102,12 @@ $(document).ready(function(){
         var workedWith = new Actor(actor);
         workedWith.appendToList();
         actorChain.push(workedWith);
-        wasIn.updateActor(workedWith);
+        if(workedWith.tmdb === 4724) {
+          console.log(actorChain);
+          alert('You connected in ' + (actorChain.length-1) + ' steps!')
+        } else {
+          wasIn.updateActor(workedWith);
+        }
       });
     })
   });
@@ -118,7 +124,6 @@ $(document).ready(function(){
     }).done(function(actor_results){
       $.each(actor_results, function(index, value){
         var actor = new Actor(value);
-        actorChain.push(actor);
         actor.appendAndListen();
       });
     });

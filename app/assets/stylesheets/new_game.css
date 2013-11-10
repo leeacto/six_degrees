@@ -9,3 +9,7 @@
 .hidden {
   display: none;
 }
+
+.starting_actor div {
+  display: inline-block;
+}

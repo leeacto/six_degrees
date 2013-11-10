@@ -57,7 +57,7 @@ wasInObj.prototype.updateActor = function(actor) {
 
 wasInObj.prototype.getFilms = function (){
   var self = this;
-  (self.filmDropDown).html('');
+  this.filmDropDown.html('');
   $.ajax({
     url: '/games/filmography',
     method: 'POST',
@@ -87,8 +87,8 @@ wasInObj.prototype.getFilms = function (){
               "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
               data[1] + "' width='92' height='138'></div>";
         $('#current_movie').html(curr_movie);
-        $('#cast_dropdown').append($('<option>Cast</option>'));
 
+        $('#cast_dropdown').append($('<option>Cast</option>'));
         $.each(data[0], function(id, actor){
           var opt = $('<option/>');
           opt.attr('id', actor[0]);
@@ -102,6 +102,7 @@ wasInObj.prototype.getFilms = function (){
 
 $(document).ready(function(){
  var actorChain = [];
+ var movieChain = [];
 
   $('body').on('actorSelect', function(event, actor){
     event.stopPropagation();
@@ -111,8 +112,6 @@ $(document).ready(function(){
     actor.setStartActor();
     var wasIn = new wasInObj(actor);
     wasIn.selectButton.on('click', function(){
-      $('.current').html("<div id='current_movie'></div>" + 
-        "<div id='current_actor'></div>")
       var actorId = $(wasIn.castDropDown).children(":selected").attr("id");
       $.ajax({
         url: "/games/find_actor_by_id",
@@ -121,13 +120,25 @@ $(document).ready(function(){
         dataType: 'json'
       }).done(function(actor){
         var workedWith = new Actor(actor);
-        workedWith.appendToList();
-        actorChain.push(workedWith);
-        if(workedWith.tmdb === 4724) {
-          console.log(actorChain);
-          alert('You connected in ' + (actorChain.length-1) + ' steps!')
-        } else {
-          wasIn.updateActor(workedWith);
+        var newActor = true;
+        $.each(actorChain, function(index, actor){
+          if (workedWith.name === actor.name) { newActor = false }
+        });
+        if (newActor) {
+          $('#error').text('');
+          $('.current').html("<div id='current_movie'></div>" + 
+            "<div id='current_actor'></div>")
+          workedWith.appendToList();
+          movieChain.push(wasIn.filmDropDown.children(":selected").attr("id"));
+          actorChain.push(workedWith);
+          if(workedWith.tmdb === 4724) {
+            alert('You connected in ' + (actorChain.length-1) + ' steps!')
+          } else {
+            wasIn.updateActor(workedWith);
+          }
+        }
+        else {
+          $('#error').text('Actor already added');
         }
       });
     })

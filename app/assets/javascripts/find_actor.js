@@ -37,10 +37,20 @@ var wasInObj = function(actor) {
   this.selectButton = $('#select_actor');
   this.filmography = this.getFilms();
   this.castDropDown.on('change', function(){
-    var curr_actor = "<div class='portrait'>" +
-              "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
-              data[1] + "' width='92' height='138'></div>";
-    $('#current_actor').html(curr_actor);
+    var actorId = $(this).children(":selected").attr("id");
+    $.ajax({
+      url: "/games/find_actor_by_id",
+      method: 'POST',
+      data: {id: actorId},
+      dataType: 'json'
+    }).done(function(actor){
+      var workedWith = new Actor(actor);
+
+      var curr_actor = "<div class='portrait'>" +
+                "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
+                workedWith.pic + "' width='92' height='138'></div>";
+      $('#current_actor').html(workedWith.html);
+    });
   })
 }
 

@@ -38,8 +38,14 @@ var wasInObj = function(actor) {
   this.filmography = this.getFilms();
 }
 
+wasInObj.prototype.updateActor = function(actor) {
+  this.startActor = actor;
+  this.filmography = this.getFilms();
+}
+
 wasInObj.prototype.getFilms = function (){
   var self = this;
+  (self.filmDropDown).html('');
   $.ajax({
     url: '/games/filmography',
     method: 'POST',
@@ -54,6 +60,7 @@ wasInObj.prototype.getFilms = function (){
       opt.appendTo(self.filmDropDown);
     })
   }).done(function(){
+    $('#cast_dropdown').html('');
     self.filmDropDown.on('change', function(){
       var movieId = $(this).children(":selected").attr("id");
       $.ajax({
@@ -94,6 +101,7 @@ $(document).ready(function(){
         var workedWith = new Actor(actor);
         workedWith.appendToList();
         actorChain.push(workedWith);
+        wasIn.updateActor(workedWith);
       });
     })
   });

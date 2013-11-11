@@ -29,4 +29,12 @@ class GamesController < ApplicationController
     @cast.map! {|actor| [actor["id"], actor["name"]]}
     render json: [@cast, @film]
   end
+
+  def persist
+    
+  end
+
+  def results
+
+  end
 end

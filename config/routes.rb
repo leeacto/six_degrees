@@ -9,4 +9,6 @@ SixDegrees::Application.routes.draw do
   post '/games/find_actor_by_id', to: 'games#find_actor_by_id'
   post '/games/filmography', to: 'games#filmography'
   post '/games/cast', to: 'games#cast'
+  get '/games/results', to: 'games#results'
+  post '/games/persist', to: 'games#persist'
 end

@@ -88,10 +88,20 @@ wasInObj.prototype.selectActor = function(actorId) {
 }
 
 wasInObj.prototype.persist = function() {
+  var actorIds = [];
+  var movieIds = [];
+  var self = this;
+
+  $.each(this.actorChain, function(index, actor){
+    actorIds.push(actor.tmdb);
+  })
+  $.each(this.movieChain, function(index, movie){
+    movieIds.push(movie);
+  })
   $.ajax({
     url: '/games/persist',
     method: 'POST',
-    data: {actors: this.actorChain, movies: this.movieChain},
+    data: {actors: actorIds, movies: movieIds},
     dataType: 'string'
   }).done(function(){
     location.href('/games/results')

@@ -88,12 +88,13 @@ wasInObj.prototype.selectActor = function(actorId) {
 }
 
 wasInObj.prototype.persist = function() {
-  var actorIds = [];
+  var actorArray = [];
   var movieIds = [];
   var self = this;
 
   $.each(this.actorChain, function(index, actor){
-    actorIds.push(actor.tmdb);
+    var actorStats = [actor.name, actor.pic, actor.tmdb]
+    actorArray.push(actorStats);
   })
   $.each(this.movieChain, function(index, movie){
     movieIds.push(movie);
@@ -101,7 +102,7 @@ wasInObj.prototype.persist = function() {
   $.ajax({
     url: '/games/persist',
     method: 'POST',
-    data: {actors: actorIds, movies: movieIds}
+    data: {actors: actorArray, movies: movieIds}
   }).done(function(data){
     window.location.href = data.location
   });

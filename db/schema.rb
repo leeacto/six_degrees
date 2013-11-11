@@ -11,23 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131111181133) do
+ActiveRecord::Schema.define(version: 20131111230840) do
 
-  create_table "games", force: true do |t|
-    t.string   "actor_start_id"
-    t.string   "actor_end_id"
+  create_table "actors", force: true do |t|
+    t.string   "name"
+    t.string   "profile_url"
+    t.integer  "tmdb"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "games", force: true do |t|
+    t.integer  "actor_start_id"
+    t.integer  "actor_end_id"
     t.integer  "steps"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "actor_start_name"
+    t.string   "actor_end_name"
   end
 
   create_table "guesses", force: true do |t|
-    t.string   "film_id"
-    t.string   "from_actor_id"
-    t.string   "to_actor_id"
+    t.integer  "film_id"
+    t.integer  "from_actor_id"
+    t.integer  "to_actor_id"
+    t.integer  "game_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "game_id"
   end
 
 end

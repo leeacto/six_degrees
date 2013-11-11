@@ -11,13 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131030162231) do
+ActiveRecord::Schema.define(version: 20131111181133) do
 
   create_table "games", force: true do |t|
     t.string   "actor_start_id"
     t.string   "actor_end_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "steps"
   end
 
   create_table "guesses", force: true do |t|
@@ -26,6 +27,7 @@ ActiveRecord::Schema.define(version: 20131030162231) do
     t.string   "to_actor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "game_id"
   end
 
 end

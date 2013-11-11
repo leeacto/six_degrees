@@ -2,11 +2,9 @@ class GamesController < ApplicationController
   include RottenTomatoes
 
   def index
-    # render :index
+    @games = Game.all
   end
-  def show
-    puts 'what?'
-  end
+  
   def new
     @end_actor = Tmdb::People.detail(4724)
     @movie = RottenMovie.find(:imdb => 137523)

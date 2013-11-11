@@ -1,5 +1,9 @@
 class GamesController < ApplicationController
   include RottenTomatoes
+
+  def index
+    @games = Game.all
+  end
   
   def new
     @end_actor = Tmdb::People.detail(4724)
@@ -46,13 +50,6 @@ class GamesController < ApplicationController
       new_guess = @game.guesses.build(guess_attrs)
       new_guess.save
     end
-
-    redirect_to 'results'
+    render json: {:location => url_for(:controller => 'games', :action => 'index')}
   end
-
-  def results
-
-  end
-
-  private
 end

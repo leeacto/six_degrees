@@ -102,8 +102,8 @@ wasInObj.prototype.persist = function() {
     url: '/games/persist',
     method: 'POST',
     data: {actors: actorIds, movies: movieIds}
-  }).done(function(){
-    location.href('/games/results')
+  }).done(function(data){
+    window.location.href = data.location
   });
 }
 
@@ -112,7 +112,6 @@ wasInObj.prototype.removeActor = function() {
     this.actorChain.pop();
     this.movieChain.pop();
     $('.starting_actor').find('.portrait').last().detach();
-    
   }
 }
 

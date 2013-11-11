@@ -1,3 +1,3 @@
 class Game < ActiveRecord::Base
-has_many :games
+has_many :guesses
 end

@@ -30,18 +30,18 @@ class GamesController < ApplicationController
   end
 
   def persist
-    puts params.inspect
+    @actors = params[:actors]
     game_attrs = {
       actor_start_id: params[:actors][0],
       actor_end_id: params[:actors][-1],
       steps: params[:movies].count
     }
     @game = Game.create(game_attrs)
-    params[:movies].each_with_index do |index, movie|
+    params[:movies].each_with_index do |movie, index|
       guess_attrs = {
         film_id: movie,
-        from_actor_id: actor[index],
-        to_actor_id: actor[index + 1],
+        from_actor_id: @actors[index],
+        to_actor_id: @actors[index + 1],
       }
       @game.guesses.build(guess_attrs)
     end

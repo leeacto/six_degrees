@@ -101,8 +101,7 @@ wasInObj.prototype.persist = function() {
   $.ajax({
     url: '/games/persist',
     method: 'POST',
-    data: {actors: actorIds, movies: movieIds},
-    dataType: 'string'
+    data: {actors: actorIds, movies: movieIds}
   }).done(function(){
     location.href('/games/results')
   });

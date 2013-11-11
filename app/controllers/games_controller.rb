@@ -43,7 +43,8 @@ class GamesController < ApplicationController
         from_actor_id: @actors[index],
         to_actor_id: @actors[index + 1],
       }
-      @game.guesses.build(guess_attrs)
+      new_guess = @game.guesses.build(guess_attrs)
+      new_guess.save
     end
 
     redirect_to 'results'

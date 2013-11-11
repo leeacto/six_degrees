@@ -31,24 +31,80 @@ Actor.prototype.appendToList = function(){
 }
 
 var wasInObj = function(actor) {
+  var self = this;
   this.startActor = actor;
   this.filmDropDown = $('#film_dropdown');
   this.castDropDown = $('#cast_dropdown');
   this.selectButton = $('#select_actor');
   this.removeButton = $('#remove_actor');
+  this.actorChain = [];
+  this.movieChain = [];
   this.filmography = this.getFilms();
+
   this.castDropDown.on('change', function(){
-    var actorId = $(this).children(":selected").attr("id");
-    $.ajax({
-      url: "/games/find_actor_by_id",
-      method: 'POST',
-      data: {id: actorId},
-      dataType: 'json'
-    }).done(function(actor){
-      var workedWith = new Actor(actor);
-      $('#current_actor').html(workedWith.html);
+    self.showCurrentActor();
+  });
+
+  this.removeButton.on('click', function(){
+    self.removeActor();
+  });
+
+  this.selectButton.on('click', function(){
+    self.selectActor();
+  });
+}
+
+wasInObj.prototype.selectActor = function() {
+  var actorId = $(this.castDropDown).children(":selected").attr("id");
+  var self = this;
+  $.ajax({
+    url: "/games/find_actor_by_id",
+    method: 'POST',
+    data: {id: actorId},
+    dataType: 'json'
+  }).done(function(actor){
+    var workedWith = new Actor(actor);
+    var movieId = self.filmDropDown.children(":selected").attr("id");
+    var newActor = true;
+    var newMovie = true;
+    $.each(self.actorChain, function(index, actor){
+      if (workedWith.name === actor.name) { newActor = false }
     });
-  })
+    if ($.inArray(movieId, self.movieChain) >= 0) { newMovie = false }
+    if (newActor && newMovie) {
+      $('#error').text('');
+      $('.current').html("<div id='current_movie'></div>" + 
+        "<div id='current_actor'></div>")
+      workedWith.appendToList();
+      self.movieChain.push(self.filmDropDown.children(":selected").attr("id"));
+      self.actorChain.push(workedWith);
+      if(workedWith.tmdb === 4724) {
+        alert('You connected in ' + (self.actorChain.length-1) + ' steps!')
+      } else { self.updateActor(workedWith) }
+    }
+    else { $('#error').text('Actor/Movie already added') }
+  });
+}
+
+wasInObj.prototype.removeActor = function() {
+  if (this.actorChain.length > 0) {
+    this.actorChain.pop();
+    this.movieChain.pop();
+    $('.starting_actor').find('.portrait').last().detach();
+  }
+}
+
+wasInObj.prototype.showCurrentActor = function() {
+  var actorId = this.castDropDown.children(":selected").attr("id");
+  $.ajax({
+    url: "/games/find_actor_by_id",
+    method: 'POST',
+    data: {id: actorId},
+    dataType: 'json'
+  }).done(function(actor){
+    var workedWith = new Actor(actor);
+    $('#current_actor').html(workedWith.html);
+  });
 }
 
 wasInObj.prototype.updateActor = function(actor) {
@@ -77,6 +133,7 @@ wasInObj.prototype.getFilms = function (){
     self.filmDropDown.on('change', function(){
       (self.castDropDown).html('');
       var movieId = $(this).children(":selected").attr("id");
+      var movieName = $(this).children(":selected").val();
 
       $.ajax({
         url: '/games/cast',
@@ -86,7 +143,7 @@ wasInObj.prototype.getFilms = function (){
       }).done(function(data){
         var curr_movie = "<div class='portrait'>" +
               "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
-              data[1] + "' width='92' height='138'></div>";
+              data[1] + "' width='92' height='138'>" + movieName + "</div>";
         $('#current_movie').html(curr_movie);
 
         $('#cast_dropdown').append($('<option>Cast</option>'));
@@ -102,55 +159,12 @@ wasInObj.prototype.getFilms = function (){
 }
 
 $(document).ready(function(){
- var actorChain = [];
- var movieChain = [];
 
   $('body').on('actorSelect', function(event, actor){
-    event.stopPropagation();
-    event.preventDefault();
     $('#starting_actors_box').html('');
-    actorChain.push(actor);
     actor.setStartActor();
     var wasIn = new wasInObj(actor);
-    wasIn.selectButton.on('click', function(){
-      var actorId = $(wasIn.castDropDown).children(":selected").attr("id");
-      $.ajax({
-        url: "/games/find_actor_by_id",
-        method: 'POST',
-        data: {id: actorId},
-        dataType: 'json'
-      }).done(function(actor){
-        var workedWith = new Actor(actor);
-        var movieId = wasIn.filmDropDown.children(":selected").attr("id");
-        var newActor = true;
-        var newMovie = true;
-        $.each(actorChain, function(index, actor){
-          if (workedWith.name === actor.name) { newActor = false }
-        });
-        if ($.inArray(movieId, movieChain) >= 0) { newMovie = false }
-        if (newActor && newMovie) {
-          $('#error').text('');
-          $('.current').html("<div id='current_movie'></div>" + 
-            "<div id='current_actor'></div>")
-          workedWith.appendToList();
-          movieChain.push(wasIn.filmDropDown.children(":selected").attr("id"));
-          actorChain.push(workedWith);
-          if(workedWith.tmdb === 4724) {
-            alert('You connected in ' + (actorChain.length-1) + ' steps!')
-          } else { wasIn.updateActor(workedWith) }
-        }
-        else { $('#error').text('Actor/Movie already added') }
-      });
-    });
-
-    wasIn.removeButton.on('click', function(){
-      if (actorChain.length > 0) {
-        actorChain.pop();
-        movieChain.pop();
-        console.log(actorChain);
-        $('.starting_actor').find('.portrait').last().detach();
-      }
-    });
+    wasIn.actorChain.push(actor);
   });
 
   $('#starting_actor').on('submit', function(event){

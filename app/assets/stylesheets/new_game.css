@@ -8,6 +8,7 @@ h1 {
 .container {
   background-color: white;
   width: 90%;
+  height: 100%;
   margin: auto;
 }
 
@@ -29,21 +30,23 @@ h1 {
 }
 
 .core {
+  float: left;
   padding-left: 3%;
   width: 75%;
-  float: left;
 }
 
 .current {
   width: 20%;
-  float: left;
+  float: right;
 }
 
 .current div {
   display: inline-block;
   height: 150px;
 }
-
+.clearfix {
+  clear: both;
+}
 footer {
   float: left;
   width: 100%;

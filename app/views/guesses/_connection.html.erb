@@ -1,0 +1,7 @@
+<div class='connection'>
+  <%= guess.from_actor %><br>
+Was In
+<%= render partial: 'films/poster', locals: {film: guess.film} %>
+With
+<%= render partial: 'actors/profile', locals: {actor: guess.to_actor} %>
+</div>

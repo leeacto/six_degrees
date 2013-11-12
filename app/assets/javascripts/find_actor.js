@@ -1,8 +1,8 @@
-var Actor = function(actor_obj) {
-  this.tmdb = actor_obj.id;
-  this.name = actor_obj.name;
-  if (actor_obj.profile_path) {
-    this.pic = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/' + actor_obj.profile_path
+var Actor = function(tmdb_obj) {
+  this.tmdb = tmdb_obj.id;
+  this.name = tmdb_obj.name;
+  if (tmdb_obj.profile_path) {
+    this.pic = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/' + tmdb_obj.profile_path
   } else {
     this.pic = '/assets/no-profile.jpg'
   }
@@ -28,6 +28,16 @@ Actor.prototype.appendAndListen = function(){
 
 Actor.prototype.appendToList = function(){
   $(this.html).appendTo('.starting_actor');
+}
+
+var Movie = function(tmdb_obj) {
+  this.tmdb = tmdb_obj.id;
+  this.title = tmdb_obj.title;
+  if (tmdb_obj.poster_path) {
+    this.pic = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/' + tmdb_obj.poster_path
+  } else {
+    this.pic = '/assets/no-profile.jpg'
+  }
 }
 
 var wasInObj = function(actor) {
@@ -65,31 +75,49 @@ wasInObj.prototype.selectActor = function(actorId) {
   }).done(function(actor){
     var workedWith = new Actor(actor);
     var movieId = self.filmDropDown.children(":selected").attr("id");
-    var newActor = true;
-    var newMovie = true;
-    $.each(self.actorChain, function(index, actor){
-      if (workedWith.name === actor.name) { newActor = false }
+    var copied = '';
+
+    $.ajax({
+      url: '/games/find_film_by_id',
+      method: 'POST',
+      data: {id: movieId},
+      dataType: 'json'
+    }).done(function(movie){
+      var newActor = true;
+      var newMovie = true;
+      var inMovie = new Movie(movie);
+      $.each(self.actorChain, function(index, actor){
+        if (workedWith.name === actor.name) { 
+          newActor = false;
+          copied = actor.name;
+        }
+      });
+      $.each(self.movieChain, function(index, movie){
+        if (inMovie.tmdb === movie.tmdb) { 
+          newMovie = false;
+          copied = movie.title;
+        }
+      });
+      if (newActor && newMovie) {
+        $('#error').text('');
+        $('.current').html("<div id='current_movie'></div>" + 
+          "<div id='current_actor'></div>")
+        workedWith.appendToList();
+        self.movieChain.push(inMovie);
+        self.actorChain.push(workedWith);
+        if(workedWith.tmdb === 4724) {
+          alert('You connected in ' + (self.actorChain.length-1) + ' steps!')
+          self.persist();
+        } else { self.updateActor(workedWith) }
+      }
+      else { $('#error').text(copied + ' already added') }
     });
-    if ($.inArray(movieId, self.movieChain) >= 0) { newMovie = false }
-    if (newActor && newMovie) {
-      $('#error').text('');
-      $('.current').html("<div id='current_movie'></div>" + 
-        "<div id='current_actor'></div>")
-      workedWith.appendToList();
-      self.movieChain.push(self.filmDropDown.children(":selected").attr("id"));
-      self.actorChain.push(workedWith);
-      if(workedWith.tmdb === 4724) {
-        alert('You connected in ' + (self.actorChain.length-1) + ' steps!')
-        self.persist();
-      } else { self.updateActor(workedWith) }
-    }
-    else { $('#error').text('Actor/Movie already added') }
   });
 }
 
 wasInObj.prototype.persist = function() {
   var actorArray = [];
-  var movieIds = [];
+  var filmArray = [];
   var self = this;
 
   $.each(this.actorChain, function(index, actor){
@@ -97,12 +125,13 @@ wasInObj.prototype.persist = function() {
     actorArray.push(actorStats);
   })
   $.each(this.movieChain, function(index, movie){
-    movieIds.push(movie);
+    var movieStats = [movie.title, movie.pic, movie.tmdb]
+    filmArray.push(movieStats);
   })
   $.ajax({
     url: '/games/persist',
     method: 'POST',
-    data: {actors: actorArray, movies: movieIds}
+    data: {actors: actorArray, films: filmArray}
   }).done(function(data){
     window.location.href = data.location
   });

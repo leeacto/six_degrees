@@ -1,0 +1,18 @@
+.sequence {
+  width: 90%;
+  margin: auto;
+}
+
+.sequence .connection {
+  margin:auto;
+}
+
+.connection {
+  display: inline-block;
+  text-align: center;
+  margin: 2%;
+}
+
+.starter div {
+  margin: auto;
+}

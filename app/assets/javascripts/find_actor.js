@@ -1,6 +1,7 @@
-var Actor = function(tmdb_obj) {
+var Actor = function(tmdb_obj, position) {
   this.tmdb = tmdb_obj.id;
   this.name = tmdb_obj.name;
+  this.position = position;
   if (tmdb_obj.profile_path) {
     this.pic = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/' + tmdb_obj.profile_path
   } else {
@@ -13,14 +14,9 @@ var Actor = function(tmdb_obj) {
               this.name + "</div>";
 }
 
-Actor.prototype.setStartActor = function(){
-  $('.starting_actor').html('');
-  $('.starting_actor').append(this.html)
-};
-
-Actor.prototype.setEndActor = function(){
-  $('.ending_actor').html('');
-  $('.ending_actor').append(this.html)
+Actor.prototype.setActor = function(el){
+  $(el).html('');
+  $(el).append(this.html)
 };
 
 Actor.prototype.appendAndListen = function(){
@@ -238,13 +234,12 @@ $(document).ready(function(){
   
   $('body').on('actorSelect', function(event, actor){
     $('#actors_box').html('');
-    console.log(wasIn.actorChain.length);
-    if (wasIn.actorChain.length === 0) {
-      actor.setStartActor();
+    if (actor.position === 'start') {
+      actor.setActor('.starting_actor');
       wasIn.setStartActor(actor);
     }
     else {
-      actor.setEndActor();
+      actor.setActor('.ending_actor');
       wasIn.setEndActor(actor);
     }
   });
@@ -260,7 +255,7 @@ $(document).ready(function(){
       dataType: 'json'
     }).done(function(actor_results){
       $.each(actor_results, function(index, value){
-        var actor = new Actor(value);
+        var actor = new Actor(value, 'start');
         actor.appendAndListen();
       });
     });
@@ -277,7 +272,7 @@ $(document).ready(function(){
       dataType: 'json'
     }).done(function(actor_results){
       $.each(actor_results, function(index, value){
-        var actor = new Actor(value);
+        var actor = new Actor(value, 'end');
         actor.appendAndListen();
       });
     });

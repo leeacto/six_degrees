@@ -7,11 +7,11 @@ class GamesController < ApplicationController
   
   def show
     @game = Game.find(params[:id])
-    @guesses = @game.guesses
+    @guesses = @game.guesses.order('id ASC')
   end
 
   def new
-    @end_actor = Tmdb::People.detail(4724)
+    
   end
 
   def find_actor
@@ -68,7 +68,7 @@ class GamesController < ApplicationController
       steps: @films.count
     }
     @game = Game.create(game_attrs)
-    params[:films].each_with_index do |film, index|
+    @films.each_with_index do |film, index|
       guess_attrs = {
         film_id: film[2].to_i,
         from_actor_id: @actors[index][2].to_i,

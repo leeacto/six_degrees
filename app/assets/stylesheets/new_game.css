@@ -18,7 +18,7 @@ h1 {
   width: 100px;
 }
 
-#starting_actors_box div {
+#actors_box div {
   display: inline-block;
 }
 
@@ -55,4 +55,5 @@ footer {
   margin: auto;
   padding-top: 2%;
   background-color: white;
+  text-align: center;
 }

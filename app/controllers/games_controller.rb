@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   include RottenTomatoes
 
   def index
-    @games = Game.all
+    @games = Game.all.order('actor_end_name ASC').order('actor_start_name').order('steps ASC')
   end
   
   def new
@@ -33,20 +33,19 @@ class GamesController < ApplicationController
   end
 
   def persist
-    @actors = params[:actors]
+    @actors = params[:actors].values
 
-    @actors.each do |actor|
+    @actors.each_with_index do |actor, index|
       a = Actor.find_or_initialize_by(tmdb: actor[2].to_i)
       a.name = actor[0]
       a.profile_url = actor[1]
       a.save
     end
-
     game_attrs = {
-      actor_start_id: params[:actors][0][2].to_i,
-      actor_start_name: Actor.find_by_tmdb(params[:actors][0][2].to_i).name,
-      actor_end_id: params[:actors][-1][2].to_i,
-      actor_end_name: Actor.find_by_tmdb(params[:actors][-1][2].to_i).name,
+      actor_start_id: @actors[0][2].to_i,
+      actor_start_name: Actor.find_by_tmdb(@actors[0][2].to_i).name,
+      actor_end_id: @actors[-1][2].to_i,
+      actor_end_name: Actor.find_by_tmdb(@actors[-1][2].to_i).name,
       steps: params[:movies].count
     }
     @game = Game.create(game_attrs)

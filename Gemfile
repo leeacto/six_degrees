@@ -23,5 +23,4 @@ group :test, :development do
   gem 'jasmine-rails'
   gem 'jasmine-jquery-rails'
   gem 'simplecov', :require => false
-  gem 'debugger'
 end

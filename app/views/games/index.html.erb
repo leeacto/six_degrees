@@ -1,5 +1,16 @@
-<h1>Links Made</hi>
+<h1>Links Made</h1>
 
+<table class='results'>
+  <th><tr>
+    <td>Starting Actor</td>
+    <td>Ending Actor</td>
+    <td>Steps</td>
+  </tr></th>
 <% @games.each do |game| %>
-  <%= game.steps %>
+  <tr>
+    <td><%= game.actor_start_name %></td>
+    <td><%= game.actor_end_name %></td>
+    <td><%= game.steps %></td>
+  </tr>
 <% end %>
+</table>

@@ -1,6 +1,7 @@
-var Actor = function(tmdb_obj) {
+var Actor = function(tmdb_obj, position) {
   this.tmdb = tmdb_obj.id;
   this.name = tmdb_obj.name;
+  this.position = position;
   if (tmdb_obj.profile_path) {
     this.pic = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/' + tmdb_obj.profile_path
   } else {
@@ -13,9 +14,9 @@ var Actor = function(tmdb_obj) {
               this.name + "</div>";
 }
 
-Actor.prototype.setStartActor = function(){
-  $('.starting_actor').html('');
-  $('.starting_actor').append(this.html)
+Actor.prototype.setActor = function(el){
+  $(el).html('');
+  $(el).append(this.html)
 };
 
 Actor.prototype.appendAndListen = function(){
@@ -23,7 +24,7 @@ Actor.prototype.appendAndListen = function(){
   $(this.html).on("click", function(e) {
     e.preventDefault();
     $(this).trigger("actorSelect", actor);
-  }).appendTo('#starting_actors_box');
+  }).appendTo('#actors_box');
 };
 
 Actor.prototype.appendToList = function(){
@@ -40,17 +41,16 @@ var Movie = function(tmdb_obj) {
   }
 }
 
-var wasInObj = function(actor) {
+var wasInObj = function() {
   var self = this;
-  this.startActor = actor;
+  this.startActor = '';
   this.filmDropDown = $('#film_dropdown');
   this.castDropDown = $('#cast_dropdown');
   this.selectButton = $('#select_actor');
   this.removeButton = $('#remove_actor');
   this.actorChain = [];
   this.movieChain = [];
-  this.filmography = this.getFilms();
-
+  
   this.castDropDown.on('change', function(){
     self.showCurrentActor();
   });
@@ -60,9 +60,24 @@ var wasInObj = function(actor) {
   });
 
   this.selectButton.on('click', function(){
-    var actorId = $(self.castDropDown).children(":selected").attr("id");
-    self.selectActor(actorId);
+    if (this.endActor) {
+      var actorId = $(self.castDropDown).children(":selected").attr("id");
+      self.selectActor(actorId);
+    }
+    else {
+      alert('Select an Ending Actor First');
+    }
   });
+}
+
+wasInObj.prototype.setStartActor = function(actor) {
+  this.startActor = actor;
+  this.filmography = this.getFilms();
+  this.actorChain.push(actor);
+}
+
+wasInObj.prototype.setEndActor = function(actor) {
+  this.endActor = actor;
 }
 
 wasInObj.prototype.selectActor = function(actorId) {
@@ -99,13 +114,11 @@ wasInObj.prototype.selectActor = function(actorId) {
         }
       });
       if (newActor && newMovie) {
-        $('#error').text('');
-        $('.current').html("<div id='current_movie'></div>" + 
-          "<div id='current_actor'></div>")
+        self.clearInstances();
         workedWith.appendToList();
         self.movieChain.push(inMovie);
         self.actorChain.push(workedWith);
-        if(workedWith.tmdb === 4724) {
+        if(workedWith.tmdb === self.endActor.tmdb) {
           alert('You connected in ' + (self.actorChain.length-1) + ' steps!')
           self.persist();
         } else { self.updateActor(workedWith) }
@@ -137,8 +150,15 @@ wasInObj.prototype.persist = function() {
   });
 }
 
+wasInObj.prototype.clearInstances = function() {
+    $('#error').html('');
+    $('.current').html("<div id='current_movie'></div>" + 
+          "<div id='current_actor'></div>");
+}
+
 wasInObj.prototype.removeActor = function() {
   if (this.actorChain.length > 0) {
+    self.clearInstances();
     this.actorChain.pop();
     this.movieChain.pop();
     $('.starting_actor').find('.portrait').last().detach();
@@ -210,25 +230,49 @@ wasInObj.prototype.getFilms = function (){
 }
 
 $(document).ready(function(){
+  var wasIn = new wasInObj();
+  
   $('body').on('actorSelect', function(event, actor){
-    $('#starting_actors_box').html('');
-    actor.setStartActor();
-    var wasIn = new wasInObj(actor);
-    wasIn.actorChain.push(actor);
+    $('#actors_box').html('');
+    if (actor.position === 'start') {
+      actor.setActor('.starting_actor');
+      wasIn.setStartActor(actor);
+    }
+    else {
+      actor.setActor('.ending_actor');
+      wasIn.setEndActor(actor);
+    }
   });
 
   $('#starting_actor').on('submit', function(event){
     event.stopPropagation();
     event.preventDefault();
-    $('#starting_actors_box').html('');
+    $('#actors_box').html('');
     $.ajax({
-      url: "/games/find_actor",
+      url: '/games/find_actor',
       method: 'POST',
       data: $(this).serialize(),
       dataType: 'json'
     }).done(function(actor_results){
       $.each(actor_results, function(index, value){
-        var actor = new Actor(value);
+        var actor = new Actor(value, 'start');
+        actor.appendAndListen();
+      });
+    });
+  });
+
+  $('#ending_actor').on('submit', function(event){
+    event.stopPropagation();
+    event.preventDefault();
+    $('#actors_box').html('');
+    $.ajax({
+      url: '/games/find_actor',
+      method: 'POST',
+      data: $(this).serialize(),
+      dataType: 'json'
+    }).done(function(actor_results){
+      $.each(actor_results, function(index, value){
+        var actor = new Actor(value, 'end');
         actor.appendAndListen();
       });
     });

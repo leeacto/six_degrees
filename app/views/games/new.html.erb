@@ -5,11 +5,14 @@
     <input type='submit' value='Find Actor'>
   <% end %>
 
-  <div id='starting_actors_box'></div>
+
+  <div id='actors_box'></div>
 
   <div class="starting_actor">
-    <%= image_tag 'no-profile.jpg' %>
-    Starting Actor
+    <div class='portrait'>
+      <%= image_tag 'no-profile.jpg' %>
+      Starting Actor
+    </div>
   </div>
 
   <%= select_tag :film_dropdown %>
@@ -18,8 +21,13 @@
   <button id='select_actor'>Select Actor</button>
   <button id='remove_actor'>Remove Actor</button>
 
+  <%= form_tag 'games/find_actor', :id => 'ending_actor'  do %>
+    <input type='text' name='search' placeholder ='Ending Actor'>
+    <input type='submit' value='Find Actor'>
+  <% end %>
+
   <div class="ending_actor portrait">
-    <%= image_tag "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/#{@end_actor.profile_path}", size:"92x138" %>
+    <%= image_tag "no-profile.jpg", size:"92x138" %>
     Ending Actor
   </div>
 </div>

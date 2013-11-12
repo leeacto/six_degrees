@@ -60,7 +60,7 @@ var wasInObj = function() {
   });
 
   this.selectButton.on('click', function(){
-    if (this.endActor) {
+    if (self.endActor) {
       var actorId = $(self.castDropDown).children(":selected").attr("id");
       self.selectActor(actorId);
     }

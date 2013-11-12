@@ -8,8 +8,8 @@
   </tr>
 <% @games.each do |game| %>
   <tr>
-    <td><%= game.actor_start_name %></td>
-    <td><%= game.actor_end_name %></td>
+    <td><%= render partial: 'actors/profile', locals: {actor: game.actor_start} %></td>
+    <td><%= render partial: 'actors/profile', locals: {actor: game.actor_end} %></td>
     <td><%= game.steps %></td>
   </tr>
 <% end %>

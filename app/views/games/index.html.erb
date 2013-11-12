@@ -1,5 +1,6 @@
 <h1>Links Made</h1>
 <%= link_to 'Play Again', root_path %>
+
 <table class='results'>
   <tr>
     <td>Starting Actor</td>
@@ -7,12 +8,14 @@
     <td>Steps</td>
   </tr>
 
-  <% @games.each do |game| %>
-    <tr>
-      <td><%= render partial: 'actors/profile', locals: {actor: game.actor_start} %></td>
-      <td><%= render partial: 'actors/profile', locals: {actor: game.actor_end} %></td>
-      <td><%= game.steps %></td>
-      <td><%= link_to 'View Solution', game %></td>
-    </tr>
+  <% if @games %>
+    <% @games.each do |game| %>
+      <tr>
+        <td><%= render partial: 'actors/profile', locals: {actor: game.actor_start} %></td>
+        <td><%= render partial: 'actors/profile', locals: {actor: game.actor_end} %></td>
+        <td><%= game.steps %></td>
+        <td><%= link_to 'View Solution', game %></td>
+      </tr>
+    <% end %>
   <% end %>
 </table>

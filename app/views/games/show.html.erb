@@ -1,0 +1,17 @@
+<h1>Connecting <%= @game.actor_start %> to <%= @game.actor_end %> in <%= @game.steps %> 
+  <% if @game.steps == 1 %>
+    Step
+  <% else %>
+    Steps
+  <% end %>
+</h1>
+
+<div class='starter'>
+  <%= render partial: 'actors/profile', locals: {actor: @game.actor_start} %>
+</div>
+
+<div class='sequence'>
+  <% @guesses.each do |guess| %>
+    <%= render partial: 'guesses/connection', locals: {guess: guess} %>
+  <% end %>
+</div>

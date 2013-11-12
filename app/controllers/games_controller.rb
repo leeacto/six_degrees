@@ -7,6 +7,7 @@ class GamesController < ApplicationController
   
   def show
     @game = Game.find(params[:id])
+    @guesses = @game.guesses
   end
 
   def new
@@ -21,6 +22,11 @@ class GamesController < ApplicationController
   def find_actor_by_id
     @actor = Tmdb::People.detail(params[:id].to_i)
     render json: @actor
+  end
+
+  def find_film_by_id
+    @film = Tmdb::Movie.detail(params[:id].to_i)
+    render json: @film
   end
 
   def filmography
@@ -38,6 +44,7 @@ class GamesController < ApplicationController
 
   def persist
     @actors = params[:actors].values
+    @films = params[:films].values
 
     @actors.each_with_index do |actor, index|
       a = Actor.find_or_initialize_by(tmdb: actor[2].to_i)
@@ -45,19 +52,27 @@ class GamesController < ApplicationController
       a.profile_url = actor[1]
       a.save
     end
+
+    @films.each_with_index do |film, index|
+      f = Film.find_or_initialize_by(tmdb: film[2].to_i)
+      f.title = film[0]
+      f.profile_url = film[1]
+      f.save
+    end
+
     game_attrs = {
       actor_start_id: @actors[0][2].to_i,
       actor_start_name: Actor.find_by_tmdb(@actors[0][2].to_i).name,
       actor_end_id: @actors[-1][2].to_i,
       actor_end_name: Actor.find_by_tmdb(@actors[-1][2].to_i).name,
-      steps: params[:movies].count
+      steps: @films.count
     }
     @game = Game.create(game_attrs)
-    params[:movies].each_with_index do |movie, index|
+    params[:films].each_with_index do |film, index|
       guess_attrs = {
-        film_id: movie,
-        from_actor_id: @actors[index],
-        to_actor_id: @actors[index + 1],
+        film_id: film[2].to_i,
+        from_actor_id: @actors[index][2].to_i,
+        to_actor_id: @actors[index + 1][2].to_i,
       }
       new_guess = @game.guesses.build(guess_attrs)
       new_guess.save

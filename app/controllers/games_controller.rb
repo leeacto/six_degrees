@@ -5,6 +5,10 @@ class GamesController < ApplicationController
     @games = Game.all.order('actor_end_name ASC').order('actor_start_name').order('steps ASC')
   end
   
+  def show
+    @game = Game.find(params[:id])
+  end
+
   def new
     @end_actor = Tmdb::People.detail(4724)
   end

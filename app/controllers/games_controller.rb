@@ -8,6 +8,8 @@ class GamesController < ApplicationController
   def show
     @game = Game.find(params[:id])
     @guesses = @game.guesses.order('id ASC')
+    @stepword = 'Step'
+    @stepword += 's' if @guesses.count > 1
   end
 
   def new

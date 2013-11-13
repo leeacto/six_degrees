@@ -1,5 +1,23 @@
+.actor_string {
+  text-align: center;
+}
+.point {
+  display: inline-block;
+  position: relative;
+  top: -100px;
+}
+
+.starter {
+  left: -20%;
+}
+
+.ender {
+  right: -20%;
+}
+
 .sequence {
-  width: 90%;
+  display: inline-block;
+  text-align: center;
   margin: auto;
 }
 
@@ -10,9 +28,4 @@
 .connection {
   display: inline-block;
   text-align: center;
-  margin: 2%;
-}
-
-.starter div {
-  margin: auto;
 }

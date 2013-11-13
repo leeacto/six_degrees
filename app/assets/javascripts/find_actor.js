@@ -157,6 +157,7 @@ wasInObj.prototype.clearInstances = function() {
 }
 
 wasInObj.prototype.removeActor = function() {
+  var self = this;
   if (this.actorChain.length > 0) {
     self.clearInstances();
     this.actorChain.pop();

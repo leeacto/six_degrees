@@ -11,9 +11,11 @@ class GamesController < ApplicationController
   end
 
   def new
-    
   end
 
+  def how
+  end
+  
   def find_actor
     @actor_array = Tmdb::People.search(params[:search])
     render json: @actor_array

@@ -5,7 +5,7 @@ var Actor = function(tmdb_obj, position) {
   if (tmdb_obj.profile_path) {
     this.pic = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/' + tmdb_obj.profile_path
   } else {
-    this.pic = '/assets/no-profile.jpg'
+    this.pic = 'http://d3a8mw37cqal2z.cloudfront.net/assets/91c0541cff7ec49/images/no-profile-w185.jpg'
   }
   this.el = $('#'+this.tmdb)
   this.html = "<div class='portrait'>" +

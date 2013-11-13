@@ -202,11 +202,10 @@ wasInObj.prototype.getFilms = function (){
     })
   }).done(function(){
     $('#cast_dropdown').html('');
-    self.filmDropDown.on('change', function(){
+    self.filmDropDown.one('change', function(){
       (self.castDropDown).html('');
       var movieId = $(this).children(":selected").attr("id");
       var movieName = $(this).children(":selected").val();
-
       $.ajax({
         url: '/games/cast',
         method: 'POST',

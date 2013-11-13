@@ -4,8 +4,15 @@ body {
 header {
   text-align: center;
 }
+
+header .links a {
+  color: black;
+  font-family: 'Sonsie One', cursive;
+}
+
 h1 {
   text-align: center;
+  font-family: 'Sonsie One', cursive;
 }
 .container {
   background-color: white;

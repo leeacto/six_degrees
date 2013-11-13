@@ -12,4 +12,5 @@ SixDegrees::Application.routes.draw do
   post '/games/cast', to: 'games#cast'
   get '/games/results', to: 'games#results'
   post '/games/persist', to: 'games#persist'
+  get '/pages/how', to: 'pages#how'
 end

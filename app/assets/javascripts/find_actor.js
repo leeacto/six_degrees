@@ -64,7 +64,7 @@ var wasInObj = function() {
   this.selectButton.on('click', function(){
     if (self.endActor) {
       var actorId = $(self.castDropDown).children(":selected").attr("id");
-      self.selectActor(actorId);
+      if (actorId) { self.selectActor(actorId) }
     }
     else {
       alert('Select an Ending Actor First');
@@ -72,6 +72,8 @@ var wasInObj = function() {
   });
 
   this.randomStartButton.on('click',function(){
+    $('#current_movie').html('');
+    $('#current_actor').html('');
     $.ajax({
       url: '/games/popular',
       method: 'POST',
@@ -150,7 +152,11 @@ wasInObj.prototype.selectActor = function(actorId) {
         if(workedWith.tmdb === self.endActor.tmdb) {
           alert('You connected in ' + (self.actorChain.length-1) + ' steps!')
           self.persist();
-        } else { self.updateActor(workedWith) }
+        } 
+        else {
+          self.filmDropDown.off('change');
+          self.updateActor(workedWith);
+        }
       }
       else { $('#error').text(copied + ' already added') }
     });
@@ -199,20 +205,48 @@ wasInObj.prototype.removeActor = function() {
 
 wasInObj.prototype.showCurrentActor = function() {
   var actorId = this.castDropDown.children(":selected").attr("id");
-  $.ajax({
-    url: "/games/find_actor_by_id",
-    method: 'POST',
-    data: {id: actorId},
-    dataType: 'json'
-  }).done(function(actor){
-    var workedWith = new Actor(actor);
-    $('#current_actor').html(workedWith.html);
-  });
+  if (actorId) {
+    $.ajax({
+      url: "/games/find_actor_by_id",
+      method: 'POST',
+      data: {id: actorId},
+      dataType: 'json'
+    }).done(function(actor){
+      var workedWith = new Actor(actor);
+      $('#current_actor').html(workedWith.html);
+    });
+  } else {
+    $('#current_actor').html('');
+  }
 }
 
 wasInObj.prototype.updateActor = function(actor) {
   this.startActor = actor;
   this.filmography = this.getFilms();
+}
+
+wasInObj.prototype.getCast = function (filmId, filmName) {
+  var self = this;
+  $('#current_actor').html('');
+  (self.castDropDown).html('');
+  $.ajax({
+    url: '/games/cast',
+    method: 'POST',
+    data: {id: filmId},
+    dataType: 'json'
+  }).done(function(data){
+    var curr_movie = "<div class='portrait'>" +
+          "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
+          data[1] + "' width='92' height='138'>" + filmName + "</div>";
+    $('#current_movie').html(curr_movie);
+    self.castDropDown.append($('<option>Cast</option>'));
+    $.each(data[0], function(id, actor){
+      var opt = $('<option/>');
+      opt.attr('id', actor[0]);
+      opt.text(actor[1]);
+      opt.appendTo(self.castDropDown);
+    });
+  });
 }
 
 wasInObj.prototype.getFilms = function (){
@@ -230,32 +264,18 @@ wasInObj.prototype.getFilms = function (){
       opt.attr('id', film[0]);
       opt.text(film[1]);
       opt.appendTo(self.filmDropDown);
-    })
-  }).done(function(){
-    $('#cast_dropdown').html('');
+    });
+    self.castDropDown.html('');
     self.filmDropDown.on('change', function(){
-      (self.castDropDown).html('');
-      var movieId = $(this).children(":selected").attr("id");
-      var movieName = $(this).children(":selected").val();
-      $.ajax({
-        url: '/games/cast',
-        method: 'POST',
-        data: {id: movieId},
-        dataType: 'json'
-      }).done(function(data){
-        var curr_movie = "<div class='portrait'>" +
-              "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
-              data[1] + "' width='92' height='138'>" + movieName + "</div>";
-        $('#current_movie').html(curr_movie);
-
-        $('#cast_dropdown').append($('<option>Cast</option>'));
-        $.each(data[0], function(id, actor){
-          var opt = $('<option/>');
-          opt.attr('id', actor[0]);
-          opt.text(actor[1]);
-          opt.appendTo($('#cast_dropdown'));
-        });
-      });
+      var filmId = $(this).children(":selected").attr("id");
+      var filmName = $(this).children(":selected").val();
+      if (filmId) { 
+        self.getCast(filmId, filmName);
+      } else {
+        $('#current_movie').html('');
+        $('#current_actor').html('');
+        self.castDropDown.html('');
+      }
     });
   });
 }

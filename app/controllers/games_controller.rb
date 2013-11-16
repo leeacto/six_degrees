@@ -12,6 +12,13 @@ class GamesController < ApplicationController
     @stepword += 's' if @guesses.count > 1
   end
 
+  def popular
+    curr = [params[:start], params[:end]].compact
+    random_movie = Tmdb::Movie.popular.sample['id']
+    random_actor = Tmdb::Movie.casts(random_movie).take(10).sample['id']
+    render json: Tmdb::People.detail(random_actor)
+  end
+
   def new
   end
 

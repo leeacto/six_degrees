@@ -1,5 +1,6 @@
 <div class='core'>
   <div id='error'></div>
+  <button id='random_start'>Random Start Actor</button>
   <%= form_tag 'games/find_actor', :id => 'starting_actor'  do %>
     <input type='text' name='search' placeholder ='Starting Actor'>
     <input type='submit' value='Find Actor'>
@@ -19,8 +20,9 @@
   With
   <%= select_tag :cast_dropdown %>
   <button id='select_actor'>Select Actor</button>
-  <button id='remove_actor'>Remove Actor</button>
+  <button id='remove_actor'>Remove Actor</button><br>
 
+  <button id='random_end'>Random End Actor</button>
   <%= form_tag 'games/find_actor', :id => 'ending_actor'  do %>
     <input type='text' name='search' placeholder ='Ending Actor'>
     <input type='submit' value='Find Actor'>

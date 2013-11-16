@@ -41,8 +41,20 @@ var Movie = function(tmdb_obj) {
   }
 }
 
+var currentFrame = function(el) {
+  this.el = $(el);
+  this.movie = $('#current_movie');
+  this.actor = $('#current_actor');
+}
+
+currentFrame.prototype.clearFrame = function() {
+  this.movie.html('');
+  this.actor.html('');
+}
+
 var wasInObj = function() {
   var self = this;
+  this.currFrame = new currentFrame('.current');
   this.startActor = '';
   this.filmDropDown = $('#film_dropdown');
   this.castDropDown = $('#cast_dropdown');
@@ -67,13 +79,12 @@ var wasInObj = function() {
       if (actorId) { self.selectActor(actorId) }
     }
     else {
-      alert('Select an Ending Actor First');
+      alert('Select an Ending Actor');
     }
   });
 
   this.randomStartButton.on('click',function(){
-    $('#current_movie').html('');
-    $('#current_actor').html('');
+    self.currFrame.clearFrame();
     $.ajax({
       url: '/games/popular',
       method: 'POST',
@@ -187,8 +198,7 @@ wasInObj.prototype.persist = function() {
 
 wasInObj.prototype.clearInstances = function() {
     $('#error').html('');
-    $('.current').html("<div id='current_movie'></div>" + 
-          "<div id='current_actor'></div>");
+    this.currFrame.clearFrame();
 }
 
 wasInObj.prototype.removeActor = function() {
@@ -199,11 +209,21 @@ wasInObj.prototype.removeActor = function() {
     this.movieChain.pop();
     $('.starting_actor').find('.portrait').last().detach();
     this.startActor = this.actorChain[this.actorChain.length-1];
-    this.filmography = this.getFilms();
+    if (this.actorChain.length > 0) {
+      this.filmography = this.getFilms()
+    } else {
+      this.clearFilmCast();
+    }
   }
 }
 
+wasInObj.prototype.clearFilmCast = function() {
+  this.castDropDown.html('');
+  this.filmDropDown.html('');
+}
+
 wasInObj.prototype.showCurrentActor = function() {
+  var self = this;
   var actorId = this.castDropDown.children(":selected").attr("id");
   if (actorId) {
     $.ajax({
@@ -213,10 +233,10 @@ wasInObj.prototype.showCurrentActor = function() {
       dataType: 'json'
     }).done(function(actor){
       var workedWith = new Actor(actor);
-      $('#current_actor').html(workedWith.html);
+      self.currFrame.actor.html(workedWith.html);
     });
   } else {
-    $('#current_actor').html('');
+    self.currFrame.actor.html('');
   }
 }
 
@@ -227,7 +247,7 @@ wasInObj.prototype.updateActor = function(actor) {
 
 wasInObj.prototype.getCast = function (filmId, filmName) {
   var self = this;
-  $('#current_actor').html('');
+  this.currFrame.actor.html('');
   (self.castDropDown).html('');
   $.ajax({
     url: '/games/cast',
@@ -238,7 +258,7 @@ wasInObj.prototype.getCast = function (filmId, filmName) {
     var curr_movie = "<div class='portrait'>" +
           "<img src='http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/" +
           data[1] + "' width='92' height='138'>" + filmName + "</div>";
-    $('#current_movie').html(curr_movie);
+    self.currFrame.movie.html(curr_movie);
     self.castDropDown.append($('<option>Cast</option>'));
     $.each(data[0], function(id, actor){
       var opt = $('<option/>');
@@ -269,11 +289,10 @@ wasInObj.prototype.getFilms = function (){
     self.filmDropDown.on('change', function(){
       var filmId = $(this).children(":selected").attr("id");
       var filmName = $(this).children(":selected").val();
-      if (filmId) { 
+      if (filmId) {
         self.getCast(filmId, filmName);
       } else {
-        $('#current_movie').html('');
-        $('#current_actor').html('');
+        self.currFrame.clearFrame();
         self.castDropDown.html('');
       }
     });
@@ -282,7 +301,7 @@ wasInObj.prototype.getFilms = function (){
 
 $(document).ready(function(){
   var wasIn = new wasInObj();
-  
+
   $('body').on('actorSelect', function(event, actor){
     $('#actors_box').html('');
     if (actor.position === 'start') {

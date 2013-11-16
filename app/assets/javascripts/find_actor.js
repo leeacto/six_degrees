@@ -163,6 +163,8 @@ wasInObj.prototype.removeActor = function() {
     this.actorChain.pop();
     this.movieChain.pop();
     $('.starting_actor').find('.portrait').last().detach();
+    this.startActor = this.actorChain[this.actorChain.length-1];
+    this.filmography = this.getFilms();
   }
 }
 
@@ -187,6 +189,7 @@ wasInObj.prototype.updateActor = function(actor) {
 wasInObj.prototype.getFilms = function (){
   var self = this;
   this.filmDropDown.html('');
+  console.log(this.startActor);
   $.ajax({
     url: '/games/filmography',
     method: 'POST',

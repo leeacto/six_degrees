@@ -48,6 +48,8 @@ var wasInObj = function() {
   this.castDropDown = $('#cast_dropdown');
   this.selectButton = $('#select_actor');
   this.removeButton = $('#remove_actor');
+  this.randomStartButton = $('#random_start');
+  this.randomEndButton = $('#random_end');
   this.actorChain = [];
   this.movieChain = [];
   
@@ -67,6 +69,33 @@ var wasInObj = function() {
     else {
       alert('Select an Ending Actor First');
     }
+  });
+
+  this.randomStartButton.on('click',function(){
+    $.ajax({
+      url: '/games/popular',
+      method: 'POST',
+      dataType: 'json',
+      data: {start: this.startActor, end: this.endActor}
+    }).done(function(actor){
+      self.actorChain = [];
+      var newStart = new Actor(actor);
+      newStart.setActor('.starting_actor');
+      self.setStartActor(newStart);
+    });
+  });
+
+  this.randomEndButton.on('click',function(){
+    $.ajax({
+      url: '/games/popular',
+      method: 'POST',
+      dataType: 'json',
+      data: {start: this.startActor, end: this.endActor}
+    }).done(function(actor){
+      var newEnd = new Actor(actor);
+      newEnd.setActor('.ending_actor');
+      self.endActor = newEnd;
+    });
   });
 }
 
@@ -189,7 +218,6 @@ wasInObj.prototype.updateActor = function(actor) {
 wasInObj.prototype.getFilms = function (){
   var self = this;
   this.filmDropDown.html('');
-  console.log(this.startActor);
   $.ajax({
     url: '/games/filmography',
     method: 'POST',
@@ -205,7 +233,7 @@ wasInObj.prototype.getFilms = function (){
     })
   }).done(function(){
     $('#cast_dropdown').html('');
-    self.filmDropDown.one('change', function(){
+    self.filmDropDown.on('change', function(){
       (self.castDropDown).html('');
       var movieId = $(this).children(":selected").attr("id");
       var movieName = $(this).children(":selected").val();

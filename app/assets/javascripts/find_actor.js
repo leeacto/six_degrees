@@ -152,7 +152,11 @@ wasInObj.prototype.selectActor = function(actorId) {
         if(workedWith.tmdb === self.endActor.tmdb) {
           alert('You connected in ' + (self.actorChain.length-1) + ' steps!')
           self.persist();
-        } else { self.updateActor(workedWith) }
+        } 
+        else {
+          self.filmDropDown.off('change');
+          self.updateActor(workedWith);
+        }
       }
       else { $('#error').text(copied + ' already added') }
     });
